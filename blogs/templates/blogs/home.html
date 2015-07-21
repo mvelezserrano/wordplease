@@ -6,12 +6,12 @@
 </head>
 <body>
     <h1>Bienvenido a Wordplease</h1>
-
-    <!--{% for posts in photos_list %}
-        <a href="{% url 'photo_detail' photo.pk %}">
-            <img src="{{ photo.url }}" alt="{{ photo.name }}" height="300">
-        </a>
-    {% endfor %}-->
+    {% if user_list|length > 0 %}
+        <h2>Listado de blogs</h2>
+        {% for user in user_list %}
+            <a>{{ user.username }}</a>
+        {% endfor %}
+    {% endif %}
 
 </body>
 </html>
