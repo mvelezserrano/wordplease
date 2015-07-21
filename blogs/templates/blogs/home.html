@@ -6,10 +6,14 @@
 </head>
 <body>
     <h1>Bienvenido a Wordplease</h1>
-    {% if user_list|length > 0 %}
+    {% if post_list|length > 0 %}
         <h2>Listado de blogs</h2>
-        {% for user in user_list %}
-            <a>{{ user.username }}</a>
+        {% for post in post_list %}
+            <div>
+                <h3>{{ post.title }}</h3>
+                <img src="{{ post.image_url }}" height="200">
+                <div>{{ post.summary }}</div>
+            </div>
         {% endfor %}
     {% endif %}
 

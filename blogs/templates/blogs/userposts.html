@@ -9,11 +9,11 @@
     {% if post_list|length > 0 %}
         <h2>Listado de blogs</h2>
         {% for post in post_list %}
-            <div>
+            <a href="{{ user }}/{{ post.pk }}">
                 <h3>{{ post.title }}</h3>
                 <img src="{{ post.image_url }}" height="200">
                 <div>{{ post.summary }}</div>
-            </div>
+            </a>
         {% endfor %}
     {% endif %}
 

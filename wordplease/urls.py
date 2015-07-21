@@ -18,6 +18,9 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^blogs/$', 'blogs.views.home'),
-    url(r'^blogs/(?P<user>[A-Za-z]+)$', 'blogs.views.blog')
+
+    url(r'^$', 'blogs.views.home'),
+    url(r'^blogs/$', 'blogs.views.blogs'),
+    url(r'^blogs/(?P<user>[A-Za-z0-9]+)$', 'blogs.views.userposts'),
+    url(r'^blogs/(?P<user>[A-Za-z0-9]+)/(?P<pk>[0-9]+)$', 'blogs.views.detail')
 ]
