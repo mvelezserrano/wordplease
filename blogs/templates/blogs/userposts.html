@@ -1,21 +1,19 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Bienvenido a Wordplease</title>
-</head>
-<body>
-    <h1>Bienvenido a Wordplease</h1>
+{% extends 'base.html' %}
+
+{% block title %}
+    Blog de {{ user }}
+{% endblock %}
+{% block section %}
+    <h1>Blog de {{ user }}</h1>
+    <h3>Últimos posts</h3>
     {% if post_list|length > 0 %}
-        <h2>Listado de blogs</h2>
+
         {% for post in post_list %}
-            <a href="{{ user }}/{{ post.pk }}">
+            <a href="{{ post.owner }}/{{ post.pk }}">
                 <h3>{{ post.title }}</h3>
-                <img src="{{ post.image_url }}" height="200">
-                <div>{{ post.summary }}</div>
+                <img src="{{ post.image_url }}" height="400">
             </a>
+        <div>{{ post.summary }}</div>
         {% endfor %}
     {% endif %}
-
-</body>
-</html>
+{% endblock %}

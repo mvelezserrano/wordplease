@@ -1,19 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Bienvenido a Wordplease</title>
-</head>
-<body>
-    <h1>Bienvenido a Wordplease</h1>
+{% extends 'base.html' %}
+
+{% block title %}
+    Listado de blogs
+{% endblock %}
+{% block section %}
+    <h1>Listado de blogs</h1>
     {% if user_list|length > 0 %}
-        <h2>Listado de blogs</h2>
         {% for user in user_list %}
             <ul>
-                <a href="{{ user.username }}">{{ user.username }}</a>
+                <a href="{{ user.username }}">Blog de {{ user.username }}</a>
             </ul>
         {% endfor %}
     {% endif %}
-
-</body>
-</html>
+{% endblock %}

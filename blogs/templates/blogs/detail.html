@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ post.title }}</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+{% block section %}
     <h1>{{ post.title }}</h1>
-    <img src="{{ post.image_url }}" alt="{{ post.title }}" width="600">
+    <strong>Author: {{ post.owner.first_name }} {{ post.owner.last_name }}</strong>
+    <p>
+        <img src="{{ post.image_url }}" alt="{{ post.title }}" width="600">
+    </p>
     <p><strong>{{ post.summary }}</strong></p>
     <p>{{ post.content }}</p>
     <footer>
@@ -14,5 +16,4 @@
             <i>{{ category.category_name }},</i>
         {% endfor %}
     </footer>
-</body>
-</html>
+{% endblock %}
