@@ -8,7 +8,7 @@
     {% if user_list|length > 0 %}
         {% for user in user_list %}
             <ul>
-                <a href="{{ user.username }}">Blog de {{ user.username }}</a>
+                <a href="{% url 'user_posts' user.username %}">Blog de {{ user.username }}</a>
             </ul>
         {% endfor %}
     {% endif %}
