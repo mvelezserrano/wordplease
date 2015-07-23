@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+from blogs.forms import PostForm
 from blogs.models import Post
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
@@ -44,3 +47,31 @@ def detail(request, user, pk):
         return render(request, 'blogs/detail.html', context)
     else:
         return HttpResponseNotFound()
+
+def create(request):
+    """
+    Muestra un formulario para crear un post y lo crea si la petición es post
+    :param request:
+    :return:
+    """
+    success_message = ''
+    if request.method=='GET':
+        form = PostForm()
+    else:
+        form = PostForm(request.POST)
+        if form.is_valid():
+            # Guardamos el objeto post y lo devolvemos
+            new_post = form.save()
+            form = PostForm()
+            success_message = 'Post generado con éxito!'
+            success_message += '<a href="{0}">'.format(
+                reverse('post_detail',args=[new_post.owner, new_post.pk])
+            )
+            success_message += ' Ver post'
+            success_message += '</a>'
+    form = PostForm()
+    context = {
+        'form': form,
+        'success_message': success_message
+    }
+    return render(request, 'blogs/new_post.html', context)

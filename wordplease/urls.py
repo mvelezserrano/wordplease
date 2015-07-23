@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^blogs/$', 'blogs.views.blogs', name='blogs_list'),
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)$', 'blogs.views.userposts', name='user_posts'),
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)/(?P<pk>[0-9]+)$', 'blogs.views.detail', name='post_detail'),
+    url(r'^blogs/new-post', 'blogs.views.create', name='create_post'),
 
     # Users URLs
     url(r'^login$', 'users.views.login', name='users_login'),
