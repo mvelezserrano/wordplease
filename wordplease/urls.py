@@ -15,18 +15,20 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from blogs.views import HomeView
+from users.views import LoginView, LogoutView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     # Blogs URLs
-    url(r'^$', 'blogs.views.home', name='blogs_home'),
+    url(r'^$', HomeView.as_view(), name='blogs_home'),
     url(r'^blogs/$', 'blogs.views.blogs', name='blogs_list'),
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)$', 'blogs.views.userposts', name='user_posts'),
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)/(?P<pk>[0-9]+)$', 'blogs.views.detail', name='post_detail'),
     url(r'^blogs/new-post', 'blogs.views.create', name='create_post'),
 
     # Users URLs
-    url(r'^login$', 'users.views.login', name='users_login'),
-    url(r'^logout$', 'users.views.logout', name='users_logout'),
+    url(r'^login$', LoginView.as_view(), name='users_login'),
+    url(r'^logout$', LogoutView.as_view(), name='users_logout'),
 ]

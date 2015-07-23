@@ -2,11 +2,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as django_logout, login as django_login, authenticate
 from users.forms import LoginForm
+from django.views.generic import View
 
+class LoginView(View):
+    def get(self, request):
+        error_messages = []
+        form = LoginForm()
+        context = {
+            'errors': error_messages,
+            'login_form': form
+        }
+        return render(request, 'users/login.html', context)
 
-def login(request):
-    error_messages = []
-    if request.method == 'POST':
+    def post(self, request):
+        error_messages = []
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('usr')
@@ -17,18 +26,18 @@ def login(request):
             else:
                 if user.is_active:
                     django_login(request, user)
-                    return redirect('blogs_home')
+                    url = request.GET.get('next', 'blogs_home') #si no existe el parámetro GET
+                    return redirect(url)
                 else:
                     error_messages.append('El usuario no está activo')
-    else:
-        form = LoginForm()
-    context = {
-        'errors': error_messages,
-        'login_form': form
-    }
-    return render(request, 'users/login.html', context)
+        context = {
+            'errors': error_messages,
+            'login_form': form
+        }
+        return render(request, 'users/login.html', context)
 
-def logout(request):
-    if request.user.is_authenticated():
-        django_logout(request)
-    return redirect('blogs_home')
+class LogoutView(View):
+    def get(self, request):
+        if request.user.is_authenticated():
+            django_logout(request)
+        return redirect('blogs_home')

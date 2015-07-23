@@ -5,14 +5,16 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.views.generic import View
 
-
-def home(request):
-    posts = Post.objects.all().order_by('-pub_date')
-    context = {
-        'post_list': posts[:5]
-    }
-    return render(request, 'blogs/home.html', context)
+class HomeView(View):
+    def get(self, request):
+        posts = Post.objects.all().order_by('-pub_date')
+        context = {
+            'post_list': posts[:5]
+        }
+        return render(request, 'blogs/home.html', context)
 
 def blogs(request):
 
@@ -30,7 +32,7 @@ def userposts(request, user):
     :return: HttpResponse
     """
 
-    posts = Post.objects.filter(owner__username=user).order_by('-pub_date')
+    posts = Post.objects.filter(owner__username=user).order_by('pub_date')
     context = {
         'post_list': posts,
         'user': user
@@ -38,7 +40,7 @@ def userposts(request, user):
     return render(request, 'blogs/userposts.html', context)
 
 def detail(request, user, pk):
-    possible_post = Post.objects.filter(owner__username=user, pk=pk)
+    possible_post = Post.objects.filter(owner__username=user, pk=pk).select_related('owner')
     post = possible_post[0] if len(possible_post) >= 1 else None
     if post is not None:
         context = {
@@ -48,6 +50,7 @@ def detail(request, user, pk):
     else:
         return HttpResponseNotFound()
 
+@login_required()
 def create(request):
     """
     Muestra un formulario para crear un post y lo crea si la petición es post
@@ -58,7 +61,9 @@ def create(request):
     if request.method=='GET':
         form = PostForm()
     else:
-        form = PostForm(request.POST)
+        post_with_owner = Post()
+        post_with_owner.owner = request.user
+        form = PostForm(request.POST, instance=post_with_owner)
         if form.is_valid():
             # Guardamos el objeto post y lo devolvemos
             new_post = form.save()
