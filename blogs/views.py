@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 
@@ -53,17 +54,28 @@ class DetailView(View):
         else:
             return HttpResponseNotFound()
 
-@login_required()
-def create(request):
-    """
-    Muestra un formulario para crear un post y lo crea si la petición es post
-    :param request:
-    :return:
-    """
-    success_message = ''
-    if request.method=='GET':
+class CreateView(View):
+    @method_decorator(login_required())
+    def get(self, request):
+        """
+        Muestra un formulario para crear un post
+        :param request:
+        :return:
+        """
         form = PostForm()
-    else:
+        context = {
+            'form': form,
+        }
+        return render(request, 'blogs/new_post.html', context)
+
+    @method_decorator(login_required())
+    def post(self, request):
+        """
+        Crea un post en base a la información POST
+        :param request:
+        :return:
+        """
+        success_message = ''
         post_with_owner = Post()
         post_with_owner.owner = request.user
         form = PostForm(request.POST, instance=post_with_owner)
@@ -77,9 +89,8 @@ def create(request):
             )
             success_message += ' Ver post'
             success_message += '</a>'
-    form = PostForm()
-    context = {
-        'form': form,
-        'success_message': success_message
-    }
-    return render(request, 'blogs/new_post.html', context)
+        context = {
+            'form': form,
+            'success_message': success_message
+        }
+        return render(request, 'blogs/new_post.html', context)
