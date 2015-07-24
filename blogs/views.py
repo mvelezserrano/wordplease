@@ -16,39 +16,42 @@ class HomeView(View):
         }
         return render(request, 'blogs/home.html', context)
 
-def blogs(request):
+class BlogsView(View):
+    def get(self, request):
 
-    users = User.objects.all()
-    context = {
-        'user_list': users
-    }
-    return render(request, 'blogs/blogs.html', context)
-
-def userposts(request, user):
-    """
-    Cargamos la pagina que lista los posts de un blog (usuario)
-    :param request: HttpRequest
-    :param user: Usuario al que pertenecen los posts
-    :return: HttpResponse
-    """
-
-    posts = Post.objects.filter(owner__username=user).order_by('pub_date')
-    context = {
-        'post_list': posts,
-        'author':user
-    }
-    return render(request, 'blogs/userposts.html', context)
-
-def detail(request, user, pk):
-    possible_post = Post.objects.filter(owner__username=user, pk=pk).select_related('owner')
-    post = possible_post[0] if len(possible_post) >= 1 else None
-    if post is not None:
+        users = User.objects.all()
         context = {
-            'post': post
+            'user_list': users
         }
-        return render(request, 'blogs/detail.html', context)
-    else:
-        return HttpResponseNotFound()
+        return render(request, 'blogs/blogs.html', context)
+
+class UserPostsView(View):
+    def get(self, request, user):
+        """
+        Cargamos la pagina que lista los posts de un blog (usuario)
+        :param request: HttpRequest
+        :param user: Usuario al que pertenecen los posts
+        :return: HttpResponse
+        """
+
+        posts = Post.objects.filter(owner__username=user).order_by('pub_date')
+        context = {
+            'post_list': posts,
+            'author':user
+        }
+        return render(request, 'blogs/userposts.html', context)
+
+class DetailView(View):
+    def get(self, request, user, pk):
+        possible_post = Post.objects.filter(owner__username=user, pk=pk).select_related('owner')
+        post = possible_post[0] if len(possible_post) >= 1 else None
+        if post is not None:
+            context = {
+                'post': post
+            }
+            return render(request, 'blogs/detail.html', context)
+        else:
+            return HttpResponseNotFound()
 
 @login_required()
 def create(request):
