@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Blog de {{ user }}
+    Blog de {{ author }}
 {% endblock %}
 {% block section %}
-    <h1>Blog de {{ user }}</h1>
+    <h1>Blog de {{ author }}</h1>
     <h3>Últimos posts</h3>
     {% if post_list|length > 0 %}
 

@@ -35,7 +35,7 @@ def userposts(request, user):
     posts = Post.objects.filter(owner__username=user).order_by('pub_date')
     context = {
         'post_list': posts,
-        'user': user
+        'author':user
     }
     return render(request, 'blogs/userposts.html', context)
 
