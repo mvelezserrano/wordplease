@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Login {% endblock %}
+
+{% block section %}
+
+{% if success_message %}
+        <span style="color:green">{{ success_message|safe }}</span>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <table>
+        {{ signup_form.as_table }}
+    </table>
+    <div>
+        <button>Registrarse</button>
+    </div>
+</form>
+
+{% endblock %}
