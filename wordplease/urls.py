@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from blogs.views import HomeView, BlogsView, UserPostsView, DetailView, CreateView, ListView
+from blogs.views import HomeView, BlogsView, UserPostsView, DetailView, CreateView, PostListView
 from users.views import LoginView, LogoutView, SignUpView
 
 urlpatterns = [
@@ -24,7 +24,7 @@ urlpatterns = [
     # Blogs URLs
     url(r'^$', HomeView.as_view(), name='blogs_home'),
     url(r'^blogs/$', BlogsView.as_view(), name='blogs_list'),
-    url(r'^blogs/all-posts/$', ListView.as_view(), name='posts_list'),
+    url(r'^blogs/all-posts/$', PostListView.as_view(), name='posts_list'),
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)$', UserPostsView.as_view(), name='user_posts'),
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)/(?P<pk>[0-9]+)$', DetailView.as_view(), name='post_detail'),
     url(r'^blogs/new-post$', CreateView.as_view(), name='create_post'),

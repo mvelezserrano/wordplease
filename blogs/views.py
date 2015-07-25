@@ -8,7 +8,8 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.views.generic import View
+from django.views.generic import View, ListView
+
 
 class PostsQuerySet(object):
     def get_posts_queryset(self, request):
@@ -28,7 +29,7 @@ class HomeView(View):
         }
         return render(request, 'blogs/home.html', context)
 
-class ListView(View, PostsQuerySet):
+class PostListView(View, PostsQuerySet):
     """
     Devuelve:
     - Los posts publicados si el usuario no está autenticado
@@ -50,7 +51,7 @@ class BlogsView(View):
             'user_list': users
         }
         return render(request, 'blogs/blogs.html', context)
-
+'''
 class UserPostsView(View, PostsQuerySet):
     def get(self, request, user):
         """
@@ -66,6 +67,15 @@ class UserPostsView(View, PostsQuerySet):
             'author':user
         }
         return render(request, 'blogs/userposts.html', context)
+'''
+
+class UserPostsView(ListView, PostsQuerySet):
+    model = Post
+    template_name = 'blogs/user_posts.html'
+
+    def get_queryset(self, **kwargs):
+        return self.get_posts_queryset(self.request).filter(owner__username=self.kwargs['user']).order_by('-created_at')
+
 
 class DetailView(View, PostsQuerySet):
     def get(self, request, user, pk):
