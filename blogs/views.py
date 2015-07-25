@@ -73,8 +73,9 @@ class UserPostsView(ListView, PostsQuerySet):
     model = Post
     template_name = 'blogs/user_posts.html'
 
-    def get_queryset(self, **kwargs):
-        return self.get_posts_queryset(self.request).filter(owner__username=self.kwargs['user']).order_by('-created_at')
+    def get_queryset(self):
+        queryset = self.get_posts_queryset(self.request)
+        return queryset.filter(owner__username=self.kwargs['user']).order_by('-pub_date')
 
 
 class DetailView(View, PostsQuerySet):
