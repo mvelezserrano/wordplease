@@ -44,7 +44,7 @@ class UserPostsView(View):
         :return: HttpResponse
         """
 
-        posts = Post.objects.filter(owner__username=user).order_by('pub_date')
+        posts = Post.objects.filter(owner__username=user).order_by('-created_at')
         context = {
             'post_list': posts,
             'author':user

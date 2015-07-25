@@ -15,6 +15,8 @@ class Post(models.Model):
     image_url = models.URLField(blank=True, null=True, default="")
     pub_date = models.DateTimeField(blank=True, null=True, default="")
     categories = models.ManyToManyField(Category)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.title
