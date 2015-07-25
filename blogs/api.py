@@ -17,6 +17,6 @@ class BlogListAPI(APIView):
 class PostListAPI(APIView):
 
     def get(self, request, user):
-        posts = Post.objects.filter(owner__username=user)
+        posts = Post.objects.filter(owner__username=user).order_by('-pub_date')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
