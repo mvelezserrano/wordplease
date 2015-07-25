@@ -13,6 +13,7 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+from blogs.api import BlogListAPI, PostListAPI
 from django.conf.urls import include, url
 from django.contrib import admin
 from blogs.views import HomeView, BlogsView, UserPostsView, DetailView, CreateView#, PostListView
@@ -29,6 +30,10 @@ urlpatterns = [
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)$', UserPostsView.as_view(), name='user_posts'),
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)/(?P<pk>[0-9]+)$', DetailView.as_view(), name='post_detail'),
     url(r'^blogs/new-post$', CreateView.as_view(), name='create_post'),
+
+    # Blogs API URLs
+    url(r'^api/1.0/blogs/$', BlogListAPI.as_view(), name='blog_list_api'),
+    url(r'^api/1.0/blogs/(?P<user>[A-Za-z0-9]+)$', PostListAPI.as_view(), name='post_list_api'),
 
     # Users URLs
     url(r'^login$', LoginView.as_view(), name='users_login'),
