@@ -1,7 +1,7 @@
 {% for post in post_list %}
     <a href="{% url 'post_detail' post.owner post.pk %}">
         <h3>{{ post.title }}</h3>
-        <img src="{{ post.image_url }}" height="400">
+        <img src="{{ post.image_url }}" width="600">
     </a>
     <div>{{ post.summary }}</div>
 {% endfor %}

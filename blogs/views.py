@@ -29,6 +29,7 @@ class HomeView(View):
         }
         return render(request, 'blogs/home.html', context)
 
+'''
 class PostListView(View, PostsQuerySet):
     """
     Devuelve:
@@ -41,7 +42,7 @@ class PostListView(View, PostsQuerySet):
             'posts': self.get_posts_queryset(request)
         }
         return render(request, 'blogs/posts_list.html', context)
-
+'''
 
 class BlogsView(View):
     def get(self, request):
@@ -79,6 +80,13 @@ class UserPostsView(ListView, PostsQuerySet):
 
 
 class DetailView(View, PostsQuerySet):
+    """
+        Carga la página de detalle en un post
+        :param request: HttpRequest
+        :param user: blog del usuario al que pertenece le post
+        :param pk: id de la post
+        :return: HttpResponse
+        """
     def get(self, request, user, pk):
         possible_post = self.get_posts_queryset(request).filter(owner__username=user, pk=pk).select_related('owner')
         post = possible_post[0] if len(possible_post) >= 1 else None
