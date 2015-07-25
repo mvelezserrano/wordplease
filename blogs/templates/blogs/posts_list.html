@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block section %}
+
+    <h1>Listado de posts</h1>
+    {% include 'blogs/posts_loop.html' with post_list=posts %}
+
+{% endblock %}

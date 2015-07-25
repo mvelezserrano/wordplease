@@ -4,12 +4,6 @@
     <h1>Bienvenido a Wordplease</h1>
     {% if post_list|length > 0 %}
         <h3>Últimos posts publicados</h3>
-        {% for post in post_list %}
-            <a href="{% url 'post_detail' post.owner post.pk %}">
-                <h3>{{ post.title }}</h3>
-                <img src="{{ post.image_url }}" height="400">
-            </a>
-            <div>{{ post.summary }}</div>
-        {% endfor %}
+        {% include 'blogs/posts_loop.html' %}
     {% endif %}
 {% endblock %}

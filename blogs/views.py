@@ -3,11 +3,22 @@ from blogs.forms import PostForm
 from blogs.models import Post
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
+
+class PostsQuerySet(object):
+    def get_posts_queryset(self, request):
+        if not request.user.is_authenticated():
+            posts = Post.objects.filter(pub_date__isnull=False).order_by('-pub_date')
+        elif request.user.is_superuser:
+            posts = Post.objects.all()
+        else:
+            posts = Post.objects.filter(Q(owner=request.user) | Q(pub_date__isnull=False))
+        return posts
 
 class HomeView(View):
     def get(self, request):
@@ -17,13 +28,18 @@ class HomeView(View):
         }
         return render(request, 'blogs/home.html', context)
 
-class ListView(View):
+class ListView(View, PostsQuerySet):
     """
     Devuelve:
     - Los posts publicados si el usuario no está autenticado
-    -
+    - Los posts del usuario autenticado o los publicos de otros
+    - Si el usuario es superadministrador, todos los posts
     """
-
+    def get(self, request):
+        context = {
+            'posts': self.get_posts_queryset(request)
+        }
+        return render(request, 'blogs/posts_list.html', context)
 
 
 class BlogsView(View):
