@@ -51,7 +51,7 @@ class BlogsView(View):
         }
         return render(request, 'blogs/blogs.html', context)
 
-class UserPostsView(View):
+class UserPostsView(View, PostsQuerySet):
     def get(self, request, user):
         """
         Cargamos la pagina que lista los posts de un blog (usuario)
@@ -60,16 +60,16 @@ class UserPostsView(View):
         :return: HttpResponse
         """
 
-        posts = Post.objects.filter(owner__username=user).order_by('-created_at')
+        posts = self.get_posts_queryset(request).filter(owner__username=user).order_by('-created_at')
         context = {
             'post_list': posts,
             'author':user
         }
         return render(request, 'blogs/userposts.html', context)
 
-class DetailView(View):
+class DetailView(View, PostsQuerySet):
     def get(self, request, user, pk):
-        possible_post = Post.objects.filter(owner__username=user, pk=pk).select_related('owner')
+        possible_post = self.get_posts_queryset(request).filter(owner__username=user, pk=pk).select_related('owner')
         post = possible_post[0] if len(possible_post) >= 1 else None
         if post is not None:
             context = {
@@ -77,7 +77,7 @@ class DetailView(View):
             }
             return render(request, 'blogs/detail.html', context)
         else:
-            return HttpResponseNotFound()
+            return HttpResponseNotFound('No existe el post')
 
 class CreateView(View):
     @method_decorator(login_required())
