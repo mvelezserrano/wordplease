@@ -55,3 +55,9 @@ class UserSerializer(serializers.Serializer):
             raise serializers.ValidationError("Ya existe un usuario con ese username")
         else:
             return data
+        '''
+        if len(users) != 0:
+            raise serializers.ValidationError("Ya existe un usario con ese username")
+        else:
+            return data
+        '''
