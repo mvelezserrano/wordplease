@@ -11,11 +11,20 @@ from django.views.generic import View
 
 class HomeView(View):
     def get(self, request):
-        posts = Post.objects.all().order_by('-pub_date')
+        posts = Post.objects.filter(pub_date__isnull=False).order_by('-pub_date')
         context = {
             'post_list': posts[:5]
         }
         return render(request, 'blogs/home.html', context)
+
+class ListView(View):
+    """
+    Devuelve:
+    - Los posts publicados si el usuario no está autenticado
+    -
+    """
+
+
 
 class BlogsView(View):
     def get(self, request):
