@@ -1,51 +1,18 @@
 # -*- coding: utf-8 -*-
-"""wordplease URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.8/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Add an import:  from blog import urls as blog_urls
-    2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
-"""
-from blogs.api import BlogListAPI, PostViewSet, CreatePostViewSet
 from django.conf.urls import include, url
 from django.contrib import admin
-from blogs.views import HomeView, BlogsView, UserPostsView, DetailView, CreateView
-from rest_framework.routers import DefaultRouter, SimpleRouter
-from users.api import UserViewSet
-from users.views import LoginView, LogoutView, SignUpView
-
-# APIRouter
-router = DefaultRouter()
-router = SimpleRouter(trailing_slash=False)
-
-router.register(r'api/1.0/blogs/(?P<user>[A-Za-z0-9]+)', PostViewSet)
-router.register(r'api/1.0/blogs/new-post', CreatePostViewSet) # para la creación
-router.register(r'api/1.0/users', UserViewSet, base_name='user')
+from users import urls as users_urls, api_urls as users_api_urls
+from blogs import urls as blogs_urls, api_urls as blogs_api_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
-    # Blogs URLs
-    url(r'^$', HomeView.as_view(), name='blogs_home'),
-    url(r'^blogs/$', BlogsView.as_view(), name='blogs_list'),
-    url(r'^blogs/(?P<user>[A-Za-z0-9]+)$', UserPostsView.as_view(), name='user_posts'),
-    url(r'^blogs/(?P<user>[A-Za-z0-9]+)/(?P<pk>[0-9]+)$', DetailView.as_view(), name='post_detail'),
-    url(r'^blogs/new-post$', CreateView.as_view(), name='create_post'),
-
-    # API URLs
-    url(r'^api/1.0/blogs/$', BlogListAPI.as_view(), name='blog_list_api'),
-    url(r'', include(router.urls), name='posts_api'),
-
     # Users URLs
-    url(r'^login$', LoginView.as_view(), name='users_login'),
-    url(r'^logout$', LogoutView.as_view(), name='users_logout'),
-    url(r'^signup$', SignUpView.as_view(), name='users_signup'),
+    url(r'', include(users_urls)),
+    url(r'api/', include(users_api_urls)),
+
+    # Photos URLs
+    url(r'', include(blogs_urls)),
+    url(r'api/', include(blogs_api_urls))
 ]
