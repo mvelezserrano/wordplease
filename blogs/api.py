@@ -4,6 +4,8 @@ from blogs.serializers import BlogSerializer, PostListSerializer, PostDetailSeri
 from blogs.views import PostsQuerySet, PostDetailQuerySet
 from django.contrib.auth.models import User
 from rest_framework import status
+from rest_framework.filters import SearchFilter
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -26,6 +28,10 @@ class PostViewSet(PostsQuerySet, PostDetailQuerySet, ReadOnlyModelViewSet):
     """
     queryset = Post.objects.all()
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('title', 'content')
+    ordering_fields = ('title', 'pub_date')
 
     def get_queryset(self):
         if self.action == 'list':
