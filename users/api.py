@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
 from rest_framework.generics import GenericAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from users.permissions import UserPermission
 from users.serializers import UserSerializer
@@ -10,12 +11,14 @@ from rest_framework import status
 
 class UserListAPI(GenericAPIView):
 
+    pagination_class = PageNumberPagination
     permission_classes = (UserPermission,)
 
     def get(self, request):
         users = User.objects.all()
+        self.paginate_queryset(users)
         serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
