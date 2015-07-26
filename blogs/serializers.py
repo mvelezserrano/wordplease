@@ -20,8 +20,13 @@ class BlogSerializer(serializers.ModelSerializer):
         return url
 
 
-class PostSerializer(serializers.ModelSerializer):
+class PostDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
+
+
+class PostListSerializer(PostDetailSerializer):
+
+    class Meta(PostDetailSerializer.Meta):
         fields = ('title', 'image_url', 'summary', 'pub_date')

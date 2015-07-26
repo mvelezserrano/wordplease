@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from blogs.models import Post
-from blogs.serializers import BlogSerializer, PostSerializer
+from blogs.serializers import BlogSerializer, PostListSerializer, PostDetailSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -23,7 +23,9 @@ class PostListAPI(ListCreateAPIView):
     Hay que mostrar los posts del usuario, y así muestra todos
     '''
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+
+    def get_serializer_class(self):
+        return PostDetailSerializer if self.request.method == "POST" else PostListSerializer
 
     '''
     def get(self, request, user):
@@ -36,4 +38,4 @@ class PostListAPI(ListCreateAPIView):
 class PostDetailAPI(RetrieveUpdateDestroyAPIView):
 
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    serializer_class = PostDetailSerializer
