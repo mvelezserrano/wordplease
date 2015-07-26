@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from blogs.api import BlogListAPI
 from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from users.api import UserViewSet

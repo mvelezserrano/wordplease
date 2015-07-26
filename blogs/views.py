@@ -40,7 +40,7 @@ class HomeView(View):
     def get(self, request):
         posts = Post.objects.filter(pub_date__isnull=False).order_by('-pub_date')
         context = {
-            'post_list': posts[:5]
+            'post_list': posts
         }
         return render(request, 'blogs/home.html', context)
 

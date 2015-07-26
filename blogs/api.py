@@ -6,19 +6,15 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import OrderingFilter
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.mixins import CreateModelMixin
 
 
-class BlogListAPI(APIView):
+class BlogViewSet(ReadOnlyModelViewSet):
 
-    def get(self, request):
-        blogs = User.objects.all()
-        serializer = BlogSerializer(blogs, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    queryset = User.objects.all()
+    serializer_class = BlogSerializer
 
 
 class PostViewSet(PostsQuerySet, PostDetailQuerySet, ReadOnlyModelViewSet):

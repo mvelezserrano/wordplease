@@ -7,10 +7,11 @@ class BlogSerializer(serializers.ModelSerializer):
 
     blogname = serializers.SerializerMethodField('username')
     url = serializers.SerializerMethodField('blogURL')
+    number_of_posts = serializers.SerializerMethodField('numberOfPosts')
 
     class Meta:
         model = User
-        fields = ('blogname','url')
+        fields = ('blogname', 'url', 'number_of_posts')
 
     def username(self, obj):
         return obj.username
@@ -18,6 +19,10 @@ class BlogSerializer(serializers.ModelSerializer):
     def blogURL(self, obj):
         url = "/blogs/" + obj.username
         return url
+
+    def numberOfPosts(self, obj):
+        posts = Post.objects.filter(owner__username=obj.username)
+        return len(posts)
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
