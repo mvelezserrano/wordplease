@@ -14,12 +14,12 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from blogs.api import BlogListAPI, PostViewSet, CreatePostViewSet  #, PostListAPI, PostDetailAPI
+from blogs.api import BlogListAPI, PostViewSet, CreatePostViewSet
 from django.conf.urls import include, url
 from django.contrib import admin
 from blogs.views import HomeView, BlogsView, UserPostsView, DetailView, CreateView
 from rest_framework.routers import DefaultRouter, SimpleRouter
-from users.api import UserListAPI, UserDetailAPI
+from users.api import UserViewSet
 from users.views import LoginView, LogoutView, SignUpView
 
 # APIRouter
@@ -28,6 +28,7 @@ router = SimpleRouter(trailing_slash=False)
 
 router.register(r'api/1.0/blogs/(?P<user>[A-Za-z0-9]+)', PostViewSet)
 router.register(r'api/1.0/blogs/new-post', CreatePostViewSet) # para la creación
+router.register(r'api/1.0/users', UserViewSet, base_name='user')
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -39,17 +40,12 @@ urlpatterns = [
     url(r'^blogs/(?P<user>[A-Za-z0-9]+)/(?P<pk>[0-9]+)$', DetailView.as_view(), name='post_detail'),
     url(r'^blogs/new-post$', CreateView.as_view(), name='create_post'),
 
-    # Blogs API URLs
+    # API URLs
     url(r'^api/1.0/blogs/$', BlogListAPI.as_view(), name='blog_list_api'),
     url(r'', include(router.urls), name='posts_api'),
-
 
     # Users URLs
     url(r'^login$', LoginView.as_view(), name='users_login'),
     url(r'^logout$', LogoutView.as_view(), name='users_logout'),
     url(r'^signup$', SignUpView.as_view(), name='users_signup'),
-
-    # Users API URLs
-    url(r'^api/1.0/users/$', UserListAPI.as_view(), name='user_list_api'),
-    url(r'^api/1.0/users/(?P<pk>[0-9]+)$', UserDetailAPI.as_view(), name='user_detail_api')
 ]
