@@ -13,7 +13,7 @@ from django.views.generic import View, ListView
 
 class PostsQuerySet(object):
     def get_posts_queryset(self, request):
-        queryset = Post.objects.filter(owner__username=self.kwargs['user'])
+        queryset = Post.objects.all().filter(owner__username=self.kwargs['user'])
         if not request.user.is_authenticated():
             posts = queryset.filter(pub_date__isnull=False).order_by('-pub_date')
         elif request.user.is_superuser:
@@ -113,7 +113,7 @@ class CreateView(View):
             form = PostForm()
             success_message = 'Post generado con éxito!'
             success_message += '<a href="{0}">'.format(
-                reverse('post_detail',args=[new_post.owner, new_post.pk])
+                reverse('post_detail', args=[new_post.owner, new_post.pk])
             )
             success_message += ' Ver post'
             success_message += '</a>'
