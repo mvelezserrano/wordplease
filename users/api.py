@@ -2,12 +2,15 @@
 from django.contrib.auth.models import User
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from users.permissions import UserPermission
 from users.serializers import UserSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 
 
 class UserListAPI(GenericAPIView):
+
+    permission_classes = (UserPermission,)
 
     def get(self, request):
         users = User.objects.all()
@@ -27,13 +30,17 @@ class UserListAPI(GenericAPIView):
 
 class UserDetailAPI(GenericAPIView):
 
+    permission_classes = (UserPermission,)
+
     def get(self, request, pk):
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user) # compruebo si el usuario autenticado puede hacer GET en este user
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
     def put(self, request, pk):
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user) # compruebo si el usuario autenticado puede hacer PUT en este user
         serializer = UserSerializer(instance=user, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -43,5 +50,6 @@ class UserDetailAPI(GenericAPIView):
 
     def delete(self, request, pk):
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user) # compruebo si el usuario autenticado puede hacer DELETE en este user
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
