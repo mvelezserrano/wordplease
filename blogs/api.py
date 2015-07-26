@@ -3,7 +3,6 @@ from blogs.models import Post
 from blogs.serializers import BlogSerializer, PostListSerializer, PostDetailSerializer
 from blogs.views import PostsQuerySet, PostDetailQuerySet
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,7 +20,7 @@ class BlogListAPI(APIView):
 
 class PostListAPI(PostsQuerySet, ListCreateAPIView):
 
-    permission_classes = (IsAuthenticatedOrReadOnly),
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_serializer_class(self):
         return PostDetailSerializer if self.request.method == "POST" else PostListSerializer
@@ -29,11 +28,20 @@ class PostListAPI(PostsQuerySet, ListCreateAPIView):
     def get_queryset(self):
         return self.get_posts_queryset(self.request)
 
+    def perform_create(self, serializer):
+        """
+        Asigna automáticamente la autoría del nuevo post
+        al usuario autenticado
+        :param serializer:
+        :return:
+        """
+        serializer.save(owner=self.request.user)
+
 class PostDetailAPI(PostDetailQuerySet, RetrieveUpdateDestroyAPIView):
 
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly),
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         return self.get_post_detail_queryset(self.request)
