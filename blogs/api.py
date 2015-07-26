@@ -16,6 +16,10 @@ class BlogViewSet(ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = BlogSerializer
 
+    filter_backends = (SearchFilter, OrderingFilter)
+    #search_fields = ('blogname')
+    ordering_fields = ('username')
+
 
 class PostViewSet(PostsQuerySet, PostDetailQuerySet, ReadOnlyModelViewSet):
     """
