@@ -61,3 +61,11 @@ class PostDetailAPI(PostsQuerySet, RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         queryset = self.get_posts_queryset(self.request)
         return queryset.filter(owner__username=self.kwargs['user'], pk=self.kwargs['pk']).order_by('-pub_date')
+    '''
+    def get_queryset(self):
+        queryset = self.get_posts_queryset(self.request)
+        return queryset.filter(owner__username=self.kwargs['user']).order_by('-pub_date')
+
+    def get_queryset(self):
+        return self.get_posts_queryset(self.request)
+    '''
