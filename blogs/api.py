@@ -22,10 +22,18 @@ class PostListAPI(ListCreateAPIView):
     '''
     Hay que mostrar los posts del usuario, y así muestra todos
     '''
-    queryset = Post.objects.all()
+    #queryset = Post.objects.all()
+
+    lookup_url_kwarg = "user"
 
     def get_serializer_class(self):
         return PostDetailSerializer if self.request.method == "POST" else PostListSerializer
+
+    def get_queryset(self):
+        user = self.kwargs.get(self.lookup_url_kwarg)
+        existing_user = get_object_or_404(User, username=user)
+        posts = Post.objects.filter(owner__username=existing_user.username).order_by('-pub_date')
+        return posts
 
     '''
     def get(self, request, user):
