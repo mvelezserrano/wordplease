@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 class BlogListAPI(APIView):
@@ -25,6 +26,7 @@ class PostListAPI(ListCreateAPIView):
     #queryset = Post.objects.all()
 
     lookup_url_kwarg = "user"
+    permission_classes = (IsAuthenticatedOrReadOnly),
 
     def get_serializer_class(self):
         return PostDetailSerializer if self.request.method == "POST" else PostListSerializer
@@ -47,3 +49,4 @@ class PostDetailAPI(RetrieveUpdateDestroyAPIView):
 
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly),
