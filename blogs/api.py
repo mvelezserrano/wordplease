@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from users.serializers import UserSerializer
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 
 class BlogListAPI(APIView):
@@ -17,10 +17,23 @@ class BlogListAPI(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class PostListAPI(APIView):
+class PostListAPI(ListCreateAPIView):
 
+    '''
+    Hay que mostrar los posts del usuario, y así muestra todos
+    '''
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    '''
     def get(self, request, user):
         existing_user = get_object_or_404(User, username=user)
         posts = Post.objects.filter(owner__username=existing_user.username).order_by('-pub_date')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    '''
+
+class PostDetailAPI(RetrieveUpdateDestroyAPIView):
+
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
