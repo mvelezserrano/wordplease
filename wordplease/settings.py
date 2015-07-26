@@ -108,3 +108,10 @@ STATIC_URL = '/static/'
 
 # LOGIN URL
 LOGIN_URL = '/login' #cuando un usuario no está autenticado nos redirigirá a la pàgina de login
+
+# REST FRAMEWORK
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 5,   # 5 items por página
+    'PAGINATE_BY_PARAM': 'page_size',   # parámetro GET para definir el número de elementos por página
+    'MAX_PAGINATE_BY': 10 ,  # número máximo de elementos por página
+}
