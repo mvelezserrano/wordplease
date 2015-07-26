@@ -13,7 +13,7 @@ class PostAdmin(admin.ModelAdmin):
     ]
 
     filter_horizontal = ('categories',)
-    list_display = ('id', 'title', 'owner', 'pub_date')
+    list_display = ('title', 'id', 'owner', 'pub_date')
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Category)
