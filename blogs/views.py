@@ -13,13 +13,28 @@ from django.views.generic import View, ListView
 
 class PostsQuerySet(object):
     def get_posts_queryset(self, request):
+        queryset = Post.objects.filter(owner__username=self.kwargs['user'])
         if not request.user.is_authenticated():
-            posts = Post.objects.filter(pub_date__isnull=False).order_by('-pub_date')
+            posts = queryset.filter(pub_date__isnull=False).order_by('-pub_date')
         elif request.user.is_superuser:
-            posts = Post.objects.all()
+            posts = queryset
         else:
-            posts = Post.objects.filter(Q(owner=request.user) | Q(pub_date__isnull=False))
+            posts = queryset.filter(Q(owner=request.user) | Q(pub_date__isnull=False))
         return posts
+
+
+class PostDetailQuerySet(object):
+    def get_post_detail_queryset(self, request):
+        queryset = Post.objects.filter(owner__username=self.kwargs['user'], pk=self.kwargs['pk'])
+        if not request.user.is_authenticated():
+            posts = queryset.filter(pub_date__isnull=False).order_by('-pub_date')
+        elif request.user.is_superuser:
+            posts = queryset
+        else:
+            posts = queryset.filter(Q(owner=request.user) | Q(pub_date__isnull=False))
+        return posts
+
+
 
 class HomeView(View):
     def get(self, request):
@@ -29,20 +44,6 @@ class HomeView(View):
         }
         return render(request, 'blogs/home.html', context)
 
-'''
-class PostListView(View, PostsQuerySet):
-    """
-    Devuelve:
-    - Los posts publicados si el usuario no está autenticado
-    - Los posts del usuario autenticado o los publicos de otros
-    - Si el usuario es superadministrador, todos los posts
-    """
-    def get(self, request):
-        context = {
-            'posts': self.get_posts_queryset(request)
-        }
-        return render(request, 'blogs/posts_list.html', context)
-'''
 
 class BlogsView(View):
     def get(self, request):
@@ -52,34 +53,17 @@ class BlogsView(View):
             'user_list': users
         }
         return render(request, 'blogs/blogs.html', context)
-'''
-class UserPostsView(View, PostsQuerySet):
-    def get(self, request, user):
-        """
-        Cargamos la pagina que lista los posts de un blog (usuario)
-        :param request: HttpRequest
-        :param user: Usuario al que pertenecen los posts
-        :return: HttpResponse
-        """
 
-        posts = self.get_posts_queryset(request).filter(owner__username=user).order_by('-created_at')
-        context = {
-            'post_list': posts,
-            'author':user
-        }
-        return render(request, 'blogs/userposts.html', context)
-'''
 
 class UserPostsView(ListView, PostsQuerySet):
     model = Post
     template_name = 'blogs/user_posts.html'
 
     def get_queryset(self):
-        queryset = self.get_posts_queryset(self.request)
-        return queryset.filter(owner__username=self.kwargs['user']).order_by('-pub_date')
+        return self.get_posts_queryset(self.request)
 
 
-class DetailView(View, PostsQuerySet):
+class DetailView(View, PostDetailQuerySet):
     """
         Carga la página de detalle en un post
         :param request: HttpRequest
@@ -88,7 +72,7 @@ class DetailView(View, PostsQuerySet):
         :return: HttpResponse
         """
     def get(self, request, user, pk):
-        possible_post = self.get_posts_queryset(request).filter(owner__username=user, pk=pk).select_related('owner')
+        possible_post = self.get_post_detail_queryset(self.request).select_related('owner')
         post = possible_post[0] if len(possible_post) >= 1 else None
         if post is not None:
             context = {
